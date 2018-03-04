@@ -20,14 +20,15 @@ class MainActivity : AppCompatActivity() {
         val mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java);
 
         mainViewModel.viewModelSubject
-                .startWith(mainViewModel.stringState)
+                .startWith(mainViewModel.getViewState())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    if (it.length == 0) {
+                    if (!it.isLoading && it.data.isEmpty()) {
                         mainViewModel.getUser()
+                    } else {
+                        text_main.text = it.data.first().first_name
                     }
-                    text_main.text = mainViewModel.stringState
                 }
 
 

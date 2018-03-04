@@ -15,9 +15,9 @@ import kotlinx.android.synthetic.main.activity_main.text_main
  */
 class MainViewModel : ViewModel() {
 
-    val viewModelSubject : PublishSubject<String> = PublishSubject.create()
-    lateinit var getUsers : GetUsersInterface
-    var stringState = ""
+    val viewModelSubject : PublishSubject<MainViewState> = PublishSubject.create()
+    private val getUsers : GetUsersInterface
+    private var viewState = MainViewState(false, emptyList(), null)
 
     init {
         val userGateway = UserGateway()
@@ -26,13 +26,16 @@ class MainViewModel : ViewModel() {
         getUsers = GetUsers(userRepository)
     }
 
+    fun getViewState() = viewState
+
     fun getUser() {
         getUsers.execute()
+                .map { it.data }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    stringState = it.data[0].first_name
-                    viewModelSubject.onNext(stringState)
+                    viewState = MainViewState(false, it, null)
+                    viewModelSubject.onNext(viewState)
                 }
     }
 }
