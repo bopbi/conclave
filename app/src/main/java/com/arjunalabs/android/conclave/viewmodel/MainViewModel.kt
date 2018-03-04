@@ -7,6 +7,7 @@ import com.arjunalabs.android.conclave.repository.UserGateway
 import com.arjunalabs.android.conclave.repository.UserRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.text_main
 
@@ -15,9 +16,9 @@ import kotlinx.android.synthetic.main.activity_main.text_main
  */
 class MainViewModel : ViewModel() {
 
-    val viewModelSubject : PublishSubject<MainViewState> = PublishSubject.create()
+    private val viewModelSubject : BehaviorSubject<MainViewState> = BehaviorSubject.createDefault(
+            MainViewState(false, emptyList(), null))
     private val getUsers : GetUsersInterface
-    private var viewState = MainViewState(false, emptyList(), null)
 
     init {
         val userGateway = UserGateway()
@@ -26,7 +27,9 @@ class MainViewModel : ViewModel() {
         getUsers = GetUsers(userRepository)
     }
 
-    fun getViewState() = viewState
+    fun viewStateSubject() = viewModelSubject
+            .distinctUntilChanged()
+            .share()
 
     fun getUser() {
         getUsers.execute()
@@ -34,7 +37,7 @@ class MainViewModel : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    viewState = MainViewState(false, it, null)
+                    val viewState = MainViewState(false, it, null)
                     viewModelSubject.onNext(viewState)
                 }
     }

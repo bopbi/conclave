@@ -19,8 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         val mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java);
 
-        mainViewModel.viewModelSubject
-                .startWith(mainViewModel.getViewState())
+        mainViewModel.viewStateSubject()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -31,6 +30,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-
     }
+
 }
