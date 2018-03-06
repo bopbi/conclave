@@ -3,9 +3,6 @@ package com.arjunalabs.android.conclave
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.arjunalabs.android.conclave.domain.GetUsers
-import com.arjunalabs.android.conclave.repository.UserGateway
-import com.arjunalabs.android.conclave.repository.UserRepository
 import com.arjunalabs.android.conclave.viewmodel.MainViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
